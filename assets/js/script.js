@@ -87,7 +87,6 @@ function askLength() {
 
   // Confirm the number is a whole number
   else if (!(Number.isInteger(parseFloat(response)))) {
-    console.log
     alert('That is not a whole number. Please try again.')
   }
 
