@@ -13,7 +13,7 @@ function generatePassword() {
   let password = '';
 
   // Prompt for password length
-  // Try to complete the askLength until it is no longer undefined (meaning nothing returned).  The catch exits the loop if a null is defined (meaning Cancel is clicked)
+  // Ask for the user desired password length until they cancel the prompt or provide a valid answer
   try {
     do {
       var passwordLength = askLength();
@@ -24,6 +24,7 @@ function generatePassword() {
   }
 
   // Prompt for password character types
+  // For each type of character, ask for the user preference on including it until either they cancel the prompt or provide a valid answer
   try {
     var finalCharSelected = [];
     for (let i = 0; i < characters.length; i++) {
@@ -31,11 +32,11 @@ function generatePassword() {
         var isCharAvailable = askPreference(characters[i][0]);
       } while (isCharAvailable === undefined);
 
-
       if (isCharAvailable) {
         finalCharSelected.push(characters[i])
       }
     }
+
     // Check if there are no character types selected
     if (finalCharSelected == false) throw 'No character types selected.  Passwords must use at least one character type.';
   } catch (err) {
@@ -46,7 +47,7 @@ function generatePassword() {
   // Display a message indicating what the final selections were
   let charToDisplay = [];
   finalCharSelected.forEach(element => { charToDisplay.push(` ${element[0]}`) });
-  alert(`Final Selection:\nNumber of characters: ${passwordLength}\nCharacter Types:${charToDisplay}`);
+  alert(`*Final Selections*\nNumber of characters: ${passwordLength}\nCharacter types:${charToDisplay}`);
 
   // Generate Password
   for (let i = 0; i < passwordLength; i++) {
