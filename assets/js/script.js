@@ -1,49 +1,66 @@
 // Assignment Code
 var generateBtn = document.querySelector("#generate");
 
-const characters = {
-  lowercase: "abcdefghijklmnopqrstuvwxyz",
-  uppercase: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
-  numeric: "0123456789",
-  special: "~`!@#$%^&*()_-+={[}]|\\:;\"'<,>.?/",
-};
+const characters = [
+  ["lowercase", "abcdefghijklmnopqrstuvwxyz"],
+  ["uppercase", "ABCDEFGHIJKLMNOPQRSTUVWXYZ"],
+  ["numeric", "0123456789"],
+  ["special", "~`!@#$%^&*()_-+={[}]|\\:;\"'<,>.?/"]
+];
 
 function generatePassword() {
-  var availableCharArray = [];
+
   let password = '';
 
-  // Prompt for Password Character Types
+  // Prompt for password length
+  // Try to complete the askLength until it is no longer undefined (meaning nothing returned).  The catch exits the loop if a null is defined (meaning Cancel is clicked)
   try {
-    Object.keys(characters).forEach(key => askPreference(availableCharArray, key))
-    console.log(availableCharArray);
-    if (availableCharArray == '') throw 'No character types selected.  Password must use at least one character type.';
+    do {
+      var passwordLength = askLength();
+    } while (passwordLength === undefined);
   } catch (err) {
     alert(err);
     return;
   }
 
-  // Prompt for Password Length
+  // Prompt for password character types
   try {
-    var passwordLength = askLength();
+    var finalCharSelected = [];
+    for (let i = 0; i < characters.length; i++) {
+      do {
+        var isCharAvailable = askPreference(characters[i][0]);
+      } while (isCharAvailable === undefined);
+
+
+      if (isCharAvailable) {
+        finalCharSelected.push(characters[i])
+      }
+    }
+    // Check if there are no character types selected
+    if (finalCharSelected == false) throw 'No character types selected.  Password must use at least one character type.';
   } catch (err) {
-    alert('Password generation cancelled.');
+    alert(err);
     return;
   }
 
+  // Display a message indicating what the final selections were
+  let charToDisplay = [];
+  finalCharSelected.forEach(element => { charToDisplay.push(` ${element[0]}`) });
+  alert(`Final Selection:\nNumber of characters: ${passwordLength}\nCharacter Types:${charToDisplay}`);
 
   // Generate Password
   for (let i = 0; i < passwordLength; i++) {
 
-    // Random row in the Available Characters Array to Pull From
-    let charType = Math.floor(Math.random() * availableCharArray.length);
+    // Randomly choose index of a row in the available characters array
+    let charType = Math.floor(Math.random() * finalCharSelected.length);
 
-    // Random position in the string of Available Characters Array
-    let characterNumber = Math.floor(Math.random() * availableCharArray[charType][0]);
+    // Randomly choose index of a character in the string of available characters for the random row
+    let characterNumber = Math.floor(Math.random() * (`${finalCharSelected[charType][1]}`).length);
 
-    // Random character from the character string in row 'charType' at position 'characterNumber'
-    let randomcharacter = (`${availableCharArray[charType][1]}`).charAt(characterNumber);
+    // Select the random character from the charType and characterNumber indexes
+    let randomcharacter = (`${finalCharSelected[charType][1]}`).charAt(characterNumber);
 
-    // Password
+    // Append each random character to the end of the password
     password = password.concat(randomcharacter);
 
   }
@@ -59,13 +76,12 @@ function askLength() {
 
   // If they click the Cancel Button, throw an error because they cancelled the prompt
   if (response === null) {
-    throw "Prompt Cancelled";
+    throw "Password generation cancelled.";
   }
 
   // If they provide a number outside the acceptable range or not a number, make them try again.
   if (!(response >= 8 && response <= 128)) {
     alert('Incorrect entry. Please try again.')
-    askLength();
   }
 
   // If they did it right, grab that number.
@@ -74,10 +90,10 @@ function askLength() {
   }
 }
 
-// Asks if a certain character type should be considered and adds it to the available characters if yes.
-function askPreference(availableChars, characterkey) {
+// Asks if a certain character type should be considered and adds it to the available characters.
+function askPreference(charactertype) {
 
-  let response = prompt(`Do you want ${characterkey} characters? (Y/N):`);
+  let response = prompt(`Do you want ${charactertype} characters? (Y/N):`);
 
   // If they click the Cancel Button, throw an error because they cancelled the prompt
   if (response === null) {
@@ -89,13 +105,14 @@ function askPreference(availableChars, characterkey) {
   // If they didn't answer with y or n
   if (response != 'y' && response != 'n') {
     alert('Incorrect entry. Please try again.')
-    askPreference(availableChars, characterkey)
   }
 
   // If they answered correctly, Check if it was a yes response and add it to the available characters array
   else {
     if (response === 'y') {
-      availableChars.push([characters[characterkey].length, characters[characterkey]])
+      return true;
+    } else {
+      return false;
     }
   }
 }
