@@ -80,17 +80,17 @@ function askLength() {
     throw "Password generation cancelled.";
   }
 
-  // Confirm that it is a number
+  // Check that it is a number
   if (isNaN(response)) {
     alert('That is not a number.  Please try again.')
   }
 
-  // Confirm the number is a whole number
+  // Check the number is a whole number
   else if (!(Number.isInteger(parseFloat(response)))) {
     alert('That is not a whole number. Please try again.')
   }
 
-  // If they provide a number outside the acceptable range or not a number, make them try again
+  // Check that the number is within the allowed range
   else if (!(response >= 8 && response <= 128)) {
     alert('That number is outside the bounds.  Please try again.')
   }
@@ -113,14 +113,14 @@ function askPreference(charactertype) {
 
   response = response.toLowerCase();
 
-  // If they didn't answer with y or n
-  if (response != 'y' && response != 'n') {
+  // If they didn't answer with y, n, yes, no
+  if (response !== 'y' && response !== 'n' && response !== 'yes' && response !== 'no') {
     alert('That is an invalid answer. Please try again.')
   }
 
   // If they answered with a valid response, then return true/false for yes/no respectively
   else {
-    if (response === 'y') {
+    if (response === 'y' || response === 'yes') {
       return true;
     } else {
       return false;
